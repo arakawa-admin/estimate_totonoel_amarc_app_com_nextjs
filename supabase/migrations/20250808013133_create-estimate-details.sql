@@ -3,8 +3,8 @@ DROP TABLE IF EXISTS estimate_details CASCADE;
 
 CREATE TABLE estimate_details (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    estimate_id uuid NOT NULL UNIQUE,
-    sequence integer NOT NULL UNIQUE DEFAULT 10,
+    estimate_id uuid NOT NULL,
+    sequence integer NOT NULL,
 
     norm text NOT NULL,
     abstract text NOT NULL,
@@ -20,7 +20,10 @@ CREATE TABLE estimate_details (
     CONSTRAINT fk_estimate
         FOREIGN KEY (estimate_id)
         REFERENCES estimates(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+
+    -- 1つの estimate_id に同じ sequence が入らないよう 複合UNIQUE
+    CONSTRAINT uq_estimate_sequence UNIQUE (estimate_id, sequence)
 );
 
 -- updated_at自動更新トリガー
